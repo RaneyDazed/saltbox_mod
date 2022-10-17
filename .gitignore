@@ -1,0 +1,8 @@
+# Ansible
+/*.retry
+
+# mod
+/ansible.cfg
+# /*.yml
+/*.log
+/*.log.*
