@@ -131,8 +131,6 @@ haos_docker_labels: "{{ docker_labels_common
 # Hostname
 haos_docker_hostname: "{{ haos_name }}"
 
-# haos_docker_networks_alias: "{{ haos_name }}"
-haos_docker_networks_alias: "{{ omit }}"
 haos_docker_networks: "{{ omit }}"
 
 # Capabilities
