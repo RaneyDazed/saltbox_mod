@@ -1,0 +1,25 @@
+
+# Loads default set of integrations. Do not remove.
+default_config:
+
+# Add the /tmp folder
+homeassistant:
+  allowlist_external_dirs:
+  - "/tmp"
+
+# Add cloud integration
+
+cloud:
+
+# Text to speech
+tts:
+  - platform: google_translate
+
+script: !include scripts.yaml
+automation: !include automations.yaml
+
+# Http entry for traefik
+http:
+  use_x_forwarded_for: true
+  trusted_proxies:
+    - 172.19.0.0/24

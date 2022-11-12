@@ -1,0 +1,151 @@
+##########################################################################
+# Title:         Sandbox: HAOS            | Default Variables            #
+# Author(s):     CHAIR/Raneydazed                                        #
+# URL:           https://github.com/saltyorg/Sandbox                     #
+# --                                                                     #
+##########################################################################
+#                   GNU General Public License v3.0                      #
+##########################################################################
+---
+################################
+# Basics
+################################
+
+haos_name: haos
+
+################################
+# Paths
+################################
+
+haos_paths_folder: "{{ haos_name }}"
+haos_paths_location: "{{ server_appdata_path }}/{{ haos_paths_folder }}"
+haos_paths_folders_list:
+  - "{{ haos_paths_location }}"
+
+################################
+# Web
+################################
+
+haos_web_subdomain: "{{ haos_name }}"
+haos_web_domain: "{{ user.domain }}"
+haos_web_port: "8123"
+haos_web_url: "{{ 'https://' + haos_web_subdomain + '.' + haos_web_domain
+               if (reverse_proxy_is_enabled)
+               else 'http://localhost:' + haos_web_port }}"
+
+################################
+# DNS
+################################
+
+haos_dns_record: "{{ haos_web_subdomain }}"
+haos_dns_zone: "{{ haos_web_domain }}"
+haos_dns_proxy: "{{ dns.proxied }}"
+
+################################
+# Traefik
+################################
+
+# haos_traefik_sso_middleware: "{{ traefik_default_sso_middleware }}"
+# haos_traefik_middleware: "{{ traefik_default_middleware + ',' + haos_traefik_sso_middleware
+#                            if (haos_traefik_sso_middleware | length > 0)
+#                            else traefik_default_middleware }}"
+# haos_traefik_certresolver: "{{ traefik_default_certresolver }}"
+# haos_traefik_enabled: true
+# haos_traefik_api_enabled: true
+# haos_traefik_api_endpoint: "`/api`"
+
+################################
+# Docker
+################################
+
+# Container
+haos_docker_container: "{{ haos_name }}"
+
+# Image
+haos_docker_image_pull: true
+haos_docker_image_tag: "latest"
+haos_docker_image: "ghcr.io/home-assistant/home-assistant:{{ haos_docker_image_tag }}"
+
+# Ports
+haos_docker_ports_defaults: []
+haos_docker_ports_ui:
+  - "{{ haos_web_port }}:{{ haos_web_port }}"
+haos_docker_ports_custom: []
+haos_docker_ports: "{{ haos_docker_ports_defaults
+                       + haos_docker_ports_ui
+                       + haos_docker_ports_custom
+                    if (not reverse_proxy_is_enabled)
+                    else haos_docker_ports_defaults
+                       + haos_docker_ports_custom }}"
+
+# Envs
+haos_docker_envs_default:
+  TZ: "{{ tz }}"
+haos_docker_envs_custom: {}
+haos_docker_envs: "{{ haos_docker_envs_default
+                      | combine(haos_docker_envs_custom) }}"
+
+# Commands
+haos_docker_commands_default: []
+haos_docker_commands_custom: []
+haos_docker_commands: "{{ haos_docker_commands_default
+                          + haos_docker_commands_custom }}"
+
+# Volumes
+haos_docker_volumes_default:
+  - "{{ haos_paths_location }}:/config"
+  - /etc/localtime:/etc/localtime:ro
+haos_docker_volumes_custom: []
+haos_docker_volumes: "{{ haos_docker_volumes_default
+                         + haos_docker_volumes_custom }}"
+
+# Devices
+haos_docker_devices_default: []
+haos_docker_devices_custom: []
+haos_docker_devices: "{{ haos_docker_devices_default
+                         + haos_docker_devices_custom }}"
+
+# Hosts
+haos_docker_hosts_default: []
+haos_docker_hosts_custom: []
+haos_docker_hosts: "{{ docker_hosts_common
+                       | combine(haos_docker_hosts_default)
+                       | combine(haos_docker_hosts_custom) }}"
+
+# Labels
+haos_docker_labels_default: {}
+haos_docker_labels_custom: {}
+haos_docker_labels: "{{ docker_labels_common
+                        | combine(haos_docker_labels_default)
+                        | combine(haos_docker_labels_custom) }}"
+
+# Hostname
+haos_docker_hostname: "{{ haos_name }}"
+
+# Networks
+haos_docker_networks_alias: "{{ haos_name }}"
+haos_docker_networks_default: []
+haos_docker_networks_custom: []
+haos_docker_networks: "{{ docker_networks_common
+                          + haos_docker_networks_default
+                          + haos_docker_networks_custom }}"
+
+# Capabilities
+haos_docker_capabilities_default: []
+haos_docker_capabilities_custom: []
+haos_docker_capabilities: "{{ haos_docker_capabilities_default
+                              + haos_docker_capabilities_custom }}"
+
+haos_docker_network_mode: "host"
+
+# Security Opts
+haos_docker_security_opts_default: []
+haos_docker_security_opts_custom: []
+haos_docker_security_opts: "{{ haos_docker_security_opts_default
+                               + haos_docker_security_opts_custom }}"
+
+# Restart Policy
+haos_docker_restart_policy: unless-stopped
+
+# State
+haos_docker_state: started
