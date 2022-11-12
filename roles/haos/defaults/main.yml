@@ -55,16 +55,9 @@ haos_dns_proxy: false
 ################################
 # Traefik
 ################################
-
-# haos_traefik_sso_middleware: "{{ traefik_default_sso_middleware }}"
-# haos_traefik_middleware: "{{ traefik_default_middleware + ',' + haos_traefik_sso_middleware
-#                           if (haos_traefik_sso_middleware | length > 0)
-#                            else traefik_default_middleware }}"
 haos_traefik_middleware:   "{{ traefik_default_middleware }}"
 haos_traefik_certresolver: "{{ traefik_default_certresolver }}"
 haos_traefik_enabled: true
-#haos_traefik_api_enabled: true
-#haos_traefik_api_endpoint: "`/api`"
 
 ################################
 # Docker
@@ -102,7 +95,7 @@ haos_docker_volumes: "{{ haos_docker_volumes_default
                          + haos_docker_volumes_custom }}"
 
 
-privileged: "yes"
+haos_docker_privileged: "yes"
 
 # Privileged Default: No # Give extended privileges to the container.
 # no
