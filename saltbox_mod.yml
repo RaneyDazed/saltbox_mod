@@ -8,4 +8,10 @@
   roles:
     - { role: pre_tasks }
     - { role: myrole, tags: ['myrole'] }
+    - { role: crowdsec, tags: ['crowdsec'] }
+    - { role: flame, tags: ['flame'] }
+    - { role: gaps, tags: ['gaps'] }
     - { role: helloworld, tags: ['helloworld'] }
+    - { role: puddletag, tags: ['puddletag'] }
+    - { role: spotweb, tags: ['spotweb'] }
+    - { role: tqm, tags: ['tqm'] }
