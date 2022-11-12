@@ -1,2 +1,5 @@
 ---
 some_var: "some value"
+# tqm: 
+#   deluge_enabled: "false"
+#   qbit_enabled: "true"
