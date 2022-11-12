@@ -11,6 +11,12 @@
 # Basics
 ################################
 
+# haos_name: haos
+
+################################
+# Basics
+################################
+
 haos_name: haos
 
 ################################
@@ -19,6 +25,10 @@ haos_name: haos
 
 haos_paths_folder: "{{ haos_name }}"
 haos_paths_location: "{{ server_appdata_path }}/{{ haos_paths_folder }}"
+haos_paths_automation_location: "{{ haos_paths_location }}/automations.yaml"
+haos_paths_conf: "{{ haos_paths_location }}/configuration.yaml"
+haos_paths_scene_location: "{{ haos_paths_location }}/scenes.yaml"
+haos_paths_script_location: "{{ haos_paths_location }}/scripts.yaml"
 haos_paths_folders_list:
   - "{{ haos_paths_location }}"
 
@@ -39,7 +49,8 @@ haos_web_url: "{{ 'https://' + haos_web_subdomain + '.' + haos_web_domain
 
 haos_dns_record: "{{ haos_web_subdomain }}"
 haos_dns_zone: "{{ haos_web_domain }}"
-haos_dns_proxy: "{{ dns.proxied }}"
+# haos_dns_proxy: "{{ dns.proxied }}"
+haos_dns_proxy: false
 
 ################################
 # Traefik
@@ -47,12 +58,13 @@ haos_dns_proxy: "{{ dns.proxied }}"
 
 # haos_traefik_sso_middleware: "{{ traefik_default_sso_middleware }}"
 # haos_traefik_middleware: "{{ traefik_default_middleware + ',' + haos_traefik_sso_middleware
-#                            if (haos_traefik_sso_middleware | length > 0)
+#                           if (haos_traefik_sso_middleware | length > 0)
 #                            else traefik_default_middleware }}"
-# haos_traefik_certresolver: "{{ traefik_default_certresolver }}"
-# haos_traefik_enabled: true
-# haos_traefik_api_enabled: true
-# haos_traefik_api_endpoint: "`/api`"
+haos_traefik_middleware:   "{{ traefik_default_middleware }}"
+haos_traefik_certresolver: "{{ traefik_default_certresolver }}"
+haos_traefik_enabled: true
+#haos_traefik_api_enabled: true
+#haos_traefik_api_endpoint: "`/api`"
 
 ################################
 # Docker
@@ -66,21 +78,11 @@ haos_docker_image_pull: true
 haos_docker_image_tag: "latest"
 haos_docker_image: "ghcr.io/home-assistant/home-assistant:{{ haos_docker_image_tag }}"
 
-# Ports
-haos_docker_ports_defaults: []
-haos_docker_ports_ui:
-  - "{{ haos_web_port }}:{{ haos_web_port }}"
-haos_docker_ports_custom: []
-haos_docker_ports: "{{ haos_docker_ports_defaults
-                       + haos_docker_ports_ui
-                       + haos_docker_ports_custom
-                    if (not reverse_proxy_is_enabled)
-                    else haos_docker_ports_defaults
-                       + haos_docker_ports_custom }}"
-
 # Envs
 haos_docker_envs_default:
   TZ: "{{ tz }}"
+  PUID: "{{ uid }}"
+  PGID: "{{ gid }}"
 haos_docker_envs_custom: {}
 haos_docker_envs: "{{ haos_docker_envs_default
                       | combine(haos_docker_envs_custom) }}"
@@ -98,6 +100,13 @@ haos_docker_volumes_default:
 haos_docker_volumes_custom: []
 haos_docker_volumes: "{{ haos_docker_volumes_default
                          + haos_docker_volumes_custom }}"
+
+
+privileged: "yes"
+
+# Privileged Default: No # Give extended privileges to the container.
+# no
+# Give extended privileges to the container.
 
 # Devices
 haos_docker_devices_default: []
@@ -122,13 +131,9 @@ haos_docker_labels: "{{ docker_labels_common
 # Hostname
 haos_docker_hostname: "{{ haos_name }}"
 
-# Networks
-haos_docker_networks_alias: "{{ haos_name }}"
-haos_docker_networks_default: []
-haos_docker_networks_custom: []
-haos_docker_networks: "{{ docker_networks_common
-                          + haos_docker_networks_default
-                          + haos_docker_networks_custom }}"
+# haos_docker_networks_alias: "{{ haos_name }}"
+haos_docker_networks_alias: "{{ omit }}"
+haos_docker_networks: "{{ omit }}"
 
 # Capabilities
 haos_docker_capabilities_default: []

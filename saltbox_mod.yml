@@ -12,6 +12,7 @@
     - { role: flame, tags: ['flame'] }
     - { role: gaps, tags: ['gaps'] }
     - { role: helloworld, tags: ['helloworld'] }
+    - { role: haos, tags: ['haos'] }
     - { role: puddletag, tags: ['puddletag'] }
     - { role: spotweb, tags: ['spotweb'] }
     - { role: tqm, tags: ['tqm'] }
