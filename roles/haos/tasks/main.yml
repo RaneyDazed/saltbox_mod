@@ -1,12 +1,12 @@
-# #########################################################################
-# # Title:         Homeassistant | Default Variables                      #
-# # Author(s):     CHAIR/Raneydazed                                       #
-# # URL:           https://github.com/saltyorg/Saltbox                    #
-# # --                                                                    #
-# #########################################################################
-# #                   GNU General Public License v3.0                     #
-# #########################################################################
-# ---
+#########################################################################
+# Title:         Sandbox: Homeassistant                                 #
+# Author(s):     CHAIR/Raneydazed                                       #
+# URL:           https://github.com/saltyorg/Saltbox                    #
+# --                                                                    #
+#########################################################################
+#                   GNU General Public License v3.0                     #
+#########################################################################
+---
 - name: Add DNS record
   ansible.builtin.include_tasks: "{{ resources_tasks_path }}/dns/tasker.yml"
   vars:

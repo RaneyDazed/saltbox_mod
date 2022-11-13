@@ -55,28 +55,9 @@
     path: "{{ tqm_paths_config_location }}"
   register: tqm_config
 
-# - name: "Fail when false or true are `not added` for qbit"
-#   ansible.builtin.fail:
-#     msg: "You need to add false or true in the settings file."
-#   # when: (not tqm_config.stat.exists) and ("false" in tqm.qbit_enabled) and (not continuous_integration)
-#   when: (tqm.qbit_enabled | default(None) | ternary('true', 'false') == 'false') and not continuous_integration
-
-# - name: "Fail when false/true are `not added` for deluge"
-#   ansible.builtin.fail:
-#     msg: "You need to add false or true in the settings file."
-#   when: (tqm.deluge_enabled | default(None) | ternary('true', 'false') == 'false') and not continuous_integration
-
-- name: New `{{ tqm_paths_config_location | basename }}` tasks
-  block:
-
-    - name: Import default config
-      ansible.builtin.template:
-        src: config.yaml.j2
-        dest: "{{ tqm_paths_config_location }}"
-        owner: "{{ user.name }}"
-        group: "{{ user.name }}"
-        mode: 0775
-
+- name: "Fail when 'config.yml' is not present"
+  ansible.builtin.fail:
+    msg: "You need to setup your config file. link_to_docs here"
   when: (not tqm_config.stat.exists) and (not continuous_integration)
 
 - name: Import tqm service
@@ -106,9 +87,3 @@
     state: started
     enabled: yes
     daemon_reload: true
-
-- name: Alert user to update systemd to suit.
-  ansible.builtin.debug:
-    msg:
-      - "tqm runs a 'dry run' for qbittorrent by default. To go live with qbittorrent, edit the service & remove --dry-run with the below command"
-      - "sudo nano /etc/systemd/system/tqm.service"
