@@ -13,6 +13,8 @@
     - { role: gaps, tags: ['gaps'] }
     - { role: helloworld, tags: ['helloworld'] }
     - { role: homeassistant, tags: ['homeassistant'] }
+    - { role: mqtt, tags: ['mqtt'] }
     - { role: puddletag, tags: ['puddletag'] }
     - { role: spotweb, tags: ['spotweb'] }
     - { role: tqm, tags: ['tqm'] }
+    - { role: zigbee2mqtt, tags: ['zigbee2mqtt'] }
