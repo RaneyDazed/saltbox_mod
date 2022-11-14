@@ -9,7 +9,7 @@
 ---
 - name: Check if tqm service exists
   ansible.builtin.stat:
-    path: "{{ tqm_paths_service_location }}"
+    path: "{{ tqm_paths_service_file_location }}"
   register: tqm_service
 
 - name: Stop existing tqm service
@@ -20,7 +20,7 @@
 
 - name: Check if tqm timer exists
   ansible.builtin.stat:
-    path: "{{ tqm_paths_timer_location }}"
+    path: "{{ tqm_paths_timer_file_location }}"
   register: tqm_timer
 
 - name: Stop existing tqm timer
@@ -60,15 +60,10 @@
     msg: "You need to setup your config file. link_to_docs here"
   when: (not tqm_config.stat.exists) and (not continuous_integration)
 
-- name: Fail if download client has not been set
-  ansible.builtin.fail:
-    msg: "You need to edit 'tqm.download_client' in the settings.yml. Options are deluge and qbit"
-  when: (tqm.download_client | default(None) | ternary('true', 'false') == 'false') and not continuous_integration
-
 - name: Import tqm service
   ansible.builtin.template:
     src: tqm.service.j2
-    dest: "{{ tqm_paths_service_location }}"
+    dest: "{{ tqm_paths_service_file_location }}"
     mode: "0664"
     force: true
 
@@ -82,7 +77,7 @@
 - name: Import tqm timer
   ansible.builtin.template:
     src: tqm.timer.j2
-    dest: "{{ tqm_paths_timer_location }}"
+    dest: "{{ tqm_paths_timer_file_location }}"
     mode: "0664"
     force: true
 

@@ -1,5 +1,6 @@
 ---
 some_var: "some value"
-# tqm: 
+tqm: 
+  download_client: qbt
 #   deluge_enabled: "false"
 #   qbit_enabled: "true"
