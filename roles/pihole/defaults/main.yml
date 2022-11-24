@@ -1,0 +1,145 @@
+##########################################################################
+# Title:         Sandbox: pihole | Default Variables              #
+# Author(s):     CHAIR/Raneydazed                                        #
+# URL:           https://github.com/saltyorg/Sandbox                     #
+# --                                                                     #
+##########################################################################
+#                   GNU General Public License v3.0                      #
+##########################################################################
+---
+################################
+# Basics
+################################
+
+pihole_name: pihole
+
+################################
+# Paths
+################################
+
+pihole_paths_folder: "{{ pihole_name }}"
+pihole_paths_location: "{{ server_appdata_path }}/{{ pihole_paths_folder }}"
+pihole_paths_conf: "{{ pihole_paths_location }}/configuration.yaml"
+pihole_paths_folders_list:
+  - "{{ pihole_paths_location }}"
+  - "{{ pihole_paths_location }}/dnsmasq"
+
+################################
+# Web
+################################
+
+pihole_web_subdomain: "{{ pihole_name }}"
+pihole_web_domain: "{{ user.domain }}"
+pihole_web_port: "8123"
+pihole_web_url: "{{ 'https://' + pihole_web_subdomain + '.' + pihole_web_domain
+                        if (reverse_proxy_is_enabled)
+                        else 'http://localhost:' + pihole_web_port }}"
+
+################################
+# DNS
+################################
+
+pihole_dns_record: "{{ pihole_web_subdomain }}"
+pihole_dns_zone: "{{ pihole_web_domain }}"
+pihole_dns_proxy: "{{ dns.proxied }}"
+
+################################
+# Traefik
+################################
+pihole_traefik_middleware: "{{ traefik_default_middleware }}"
+pihole_traefik_certresolver: "{{ traefik_default_certresolver }}"
+pihole_traefik_enabled: true
+
+################################
+# Docker
+################################
+
+# Container
+pihole_docker_container: "{{ pihole_name }}"
+
+# Image
+pihole_docker_image_pull: true
+pihole_docker_image_tag: "latest"
+pihole_docker_image: "lscr.io/linuxserver/pihole:{{ pihole_docker_image_tag }}"
+
+# Envs
+pihole_docker_envs_default:
+  TZ: "{{ tz }}"
+  PUID: "{{ uid }}"
+  PGID: "{{ gid }}"
+  FTLCONF_LOCAL_IPV4: "${FTLCONF_LOCAL_IPV4}"
+  WEBPASSWORD: "{{ user.pass }}"
+  WEBTHEME: "${WEBTHEME:-default-light}"
+  REV_SERVER: "${REV_SERVER:-false}"
+  REV_SERVER_TARGET: "${REV_SERVER_TARGET}"
+  REV_SERVER_DOMAIN: "${REV_SERVER_DOMAIN}"
+  REV_SERVER_CIDR: "${REV_SERVER_CIDR}"
+  PIHOLE_DNS_: "127.0.0.1#5335"
+  DNSSEC: "true"
+  DNSMASQ_LISTENING: "single"
+pihole_docker_envs_custom: {}
+pihole_docker_envs: "{{ pihole_docker_envs_default
+                               | combine(pihole_docker_envs_custom) }}"
+
+# Commands
+pihole_docker_commands_default: []
+pihole_docker_commands_custom: []
+pihole_docker_commands: "{{ pihole_docker_commands_default
+                                   + pihole_docker_commands_custom }}"
+
+# Volumes
+pihole_docker_volumes_default:
+  - "{{ pihole_paths_location }}:/config"
+  - /etc/localtime:/etc/localtime:ro
+pihole_docker_volumes_custom: []
+pihole_docker_volumes: "{{ pihole_docker_volumes_default
+                                  + pihole_docker_volumes_custom }}"
+
+# Extended Privileges
+pihole_docker_privileged: "yes"
+
+# Devices
+pihole_docker_devices_default: []
+pihole_docker_devices_custom: []
+pihole_docker_devices: "{{ pihole_docker_devices_default
+                                  + pihole_docker_devices_custom }}"
+
+# Hosts
+pihole_docker_hosts_default: []
+pihole_docker_hosts_custom: []
+pihole_docker_hosts: "{{ docker_hosts_common
+                                | combine(pihole_docker_hosts_default)
+                                | combine(pihole_docker_hosts_custom) }}"
+
+# Labels
+pihole_docker_labels_default: {}
+pihole_docker_labels_custom: {}
+pihole_docker_labels: "{{ docker_labels_common
+                                 | combine(pihole_docker_labels_default)
+                                 | combine(pihole_docker_labels_custom) }}"
+
+# Hostname
+pihole_docker_hostname: "{{ pihole_name }}"
+
+pihole_docker_networks: "{{ omit }}"
+
+# Capabilities
+pihole_docker_capabilities_default: []
+pihole_docker_capabilities_custom: []
+pihole_docker_capabilities: "{{ pihole_docker_capabilities_default
+                                       + pihole_docker_capabilities_custom }}"
+
+# Network Mode
+pihole_docker_network_mode: "host"
+
+# Security Opts
+pihole_docker_security_opts_default: []
+pihole_docker_security_opts_custom: []
+pihole_docker_security_opts: "{{ pihole_docker_security_opts_default
+                                        + pihole_docker_security_opts_custom }}"
+
+# Restart Policy
+pihole_docker_restart_policy: unless-stopped
+
+# State
+pihole_docker_state: started
