@@ -19,10 +19,7 @@ homeassistant_name: homeassistant
 
 homeassistant_paths_folder: "{{ homeassistant_name }}"
 homeassistant_paths_location: "{{ server_appdata_path }}/{{ homeassistant_paths_folder }}"
-homeassistant_paths_automation_location: "{{ homeassistant_paths_location }}/automations.yaml"
 homeassistant_paths_conf: "{{ homeassistant_paths_location }}/configuration.yaml"
-homeassistant_paths_scene_location: "{{ homeassistant_paths_location }}/scenes.yaml"
-homeassistant_paths_script_location: "{{ homeassistant_paths_location }}/scripts.yaml"
 homeassistant_paths_folders_list:
   - "{{ homeassistant_paths_location }}"
 

@@ -12,6 +12,7 @@
     - { role: flame, tags: ['flame'] }
     - { role: gaps, tags: ['gaps'] }
     - { role: helloworld, tags: ['helloworld'] }
+    - { role: homarr, tags: ['homarr'] }
     - { role: homeassistant, tags: ['homeassistant'] }
     - { role: mqtt, tags: ['mqtt'] }
     - { role: puddletag, tags: ['puddletag'] }
