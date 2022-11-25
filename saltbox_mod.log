@@ -1,0 +1,4 @@
+2022-11-24 23:07:49,910 p=3894603 u=root n=ansible | playbook: /opt/saltbox_mod/saltbox_mod.yml
+2022-11-24 23:07:49,910 p=3894603 u=root n=ansible |   play #1 (localhost): localhost	TAGS: []
+2022-11-24 23:07:49,915 p=3894603 u=root n=ansible |       TASK TAGS: [helloworld, myrole]
+
