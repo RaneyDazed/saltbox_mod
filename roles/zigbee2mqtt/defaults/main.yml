@@ -39,7 +39,7 @@ zigbee2mqtt_web_url: "{{ 'https://' + zigbee2mqtt_web_subdomain + '.' + zigbee2m
 
 zigbee2mqtt_dns_record: "{{ zigbee2mqtt_web_subdomain }}"
 zigbee2mqtt_dns_zone: "{{ zigbee2mqtt_web_domain }}"
-zigbee2mqtt_dns_proxy: false
+zigbee2mqtt_dns_proxy: "{{ dns.proxied }}"
 
 ################################
 # Traefik
