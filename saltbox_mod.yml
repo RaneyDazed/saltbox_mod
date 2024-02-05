@@ -9,9 +9,11 @@
     - ['/srv/git/saltbox/settings.yml', '/srv/git/saltbox/defaults/settings.yml.default']
     - ['/srv/git/saltbox/adv_settings.yml', '/srv/git/saltbox/defaults/adv_settings.yml.default']
   roles:
-    # Reqs
     - { role: pre_tasks, tags: ['always', 'pre_tasks'] }
-    # Apps Start
     - { role: myrole, tags: ['myrole'] }
     - { role: helloworld, tags: ['helloworld'] }
-    # Apps End
+    - { role: immich, tags: ['immich'] }
+    - { role: immich_microservices, tags: ['immich_microservices'] }
+    - { role: immich_machine_learning, tags: ['immich_machine_learning'] }
+    - { role: membarr, tags: ['membarr'] }
+    - { role: maintainerr, tags: ['maintainerr'] }
