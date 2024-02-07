@@ -17,3 +17,4 @@
     - { role: immich_machine_learning, tags: ['immich_machine_learning'] }
     - { role: membarr, tags: ['membarr'] }
     - { role: maintainerr, tags: ['maintainerr'] }
+    - { role: zigbee2mqtt, tags: ['zigbee2mqtt'] }
