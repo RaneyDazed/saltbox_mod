@@ -10,6 +10,7 @@
     - ['/srv/git/saltbox/adv_settings.yml', '/srv/git/saltbox/defaults/adv_settings.yml.default']
   roles:
     - { role: pre_tasks, tags: ['always', 'pre_tasks'] }
+    - { role: cockpit, tags: ['cockpit'] }
     - { role: myrole, tags: ['myrole'] }
     - { role: helloworld, tags: ['helloworld'] }
     - { role: immich, tags: ['immich'] }
