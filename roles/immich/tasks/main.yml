@@ -7,6 +7,11 @@
 #                   GNU General Public License v3.0                     #
 #########################################################################
 ---
+- name: Remove legacy redis Docker container
+  ansible.builtin.include_tasks: "{{ resources_tasks_path }}/docker/remove_docker_container.yml"
+  vars:
+    var_prefix: "{{ immich_name }}_redis"
+
 - name: Import Redis Role
   ansible.builtin.include_role:
     name: redis
@@ -16,15 +21,23 @@
     redis_paths_folder: "{{ immich_name }}"
     redis_paths_location: "{{ server_appdata_path }}/{{ redis_paths_folder }}/redis"
 
+- name: Remove legacy PostgreSQL Docker container
+  ansible.builtin.include_tasks: "{{ resources_tasks_path }}/docker/remove_docker_container.yml"
+  vars:
+    var_prefix: "{{ immich_name }}_postgres"
+
 - name: Import PostgreSQL Role
   ansible.builtin.include_role:
     name: postgres
   vars:
-    postgres_instances: ["{{ immich_name }}_postgres"]
-    postgres_docker_env_db: "{{ immich_name }}"
-    postgres_docker_image_tag: "16"
-    postgres_paths_folder: "{{ immich_name }}"
-    postgres_paths_location: "{{ server_appdata_path }}/{{ postgres_paths_folder }}/postgres"
+    postgres_instances: ["{{ immich_postgres_name }}"]
+    postgres_docker_env_db: "{{ immich_postgres_docker_env_db }}"
+    postgres_docker_image_tag: "{{ immich_postgres_docker_image_tag }}"
+    postgres_docker_image_repo: "{{ immich_postgres_docker_image_repo }}"
+    postgres_paths_folder: "{{ immich_postgres_paths_folder }}"
+    postgres_paths_location: "{{ immich_postgres_paths_location }}"
+    postgres_docker_commands_default: "{{ immich_postgres_commands_default }}"
+    postgres_docker_envs_custom: "{{ immich_postgres_docker_envs_custom }}"
 
 - name: Import Immich Machine Learning Role
   ansible.builtin.include_role:
@@ -35,31 +48,19 @@
     immich_machine_learning_paths_folder: "{{ immich_name }}"
     immich_machine_learning_paths_location: "{{ server_appdata_path }}/{{ immich_machine_learning_paths_folder }}/machine-learning"
     immich_machine_learning_docker_envs_default:
-      MACHINE_LEARNING_HOST: "{{ immich_name }}_machine_learning"
+      # IMMICH_HOST: "{{ immich_name }}_machine_learning"
+      # IMMICH_ENV: "production"
       MPLCONFIGDIR: "/map"
-      TZ: "America/Chicago"
+      # IMMICH_PORT: "3003"
+      TZ: "{{ tz }}"
+      IMMICH_LOG_LEVEL: "debug"
+      # MACHINE_LEARNING_CACHE_FOLDER: "/cache"
+      # DEVICE: "cpu"
+      # MACHINE_LEARNING_MODEL_TTL: "1000"
     immich_machine_learning_docker_volumes_default:
       - "{{ immich_machine_learning_paths_location }}/.map:/map"
       - "{{ immich_machine_learning_paths_location }}/cache:/cache"
-
-- name: Import Immich Microservices Role
-  ansible.builtin.include_role:
-    name: immich_microservices
-  vars:
-    immich_microservices_name: "{{ immich_name }}_microservices"
-    immich_microservices_paths_folder: "{{ immich_name }}"
-    immich_microservices_paths_location: "{{ server_appdata_path }}/{{ immich_microservices_paths_folder }}/microservices"
-    immich_microservices_docker_envs_default:
-      LOG_LEVEL: "log"
-      DB_HOSTNAME: "{{ immich_name }}_postgres"
-      DB_USERNAME: "{{ postgres_docker_env_user }}"
-      DB_PASSWORD: "{{ postgres_docker_env_password }}"
-      DB_DATABASE_NAME: "{{ immich_name }}"
-      REDIS_HOSTNAME: "{{ immich_name }}_redis"
-      UPLOAD_LOCATION: "/mnt/unionfs/Media/Photos"
-      TZ: "America/Chicago"
-    immich_microservices_docker_volumes_default:
-      - "/mnt/unionfs/Media/Photos:/usr/src/app/upload"
+      - "/etc/localtime:/etc/localtime:ro"
 
 - name: Add DNS record
   ansible.builtin.include_tasks: "{{ resources_tasks_path }}/dns/tasker.yml"
@@ -73,6 +74,10 @@
 
 - name: Create directories
   ansible.builtin.include_tasks: "{{ resources_tasks_path }}/directories/create_directories.yml"
+
+- name: Docker Devices Task
+  ansible.builtin.include_tasks: "{{ resources_tasks_path }}/docker/set_docker_devices_variable.yml"
+  when: gpu.intel
 
 - name: Create Docker container
   ansible.builtin.include_tasks: "{{ resources_tasks_path }}/docker/create_docker_container.yml"

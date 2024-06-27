@@ -14,6 +14,20 @@
 immich_name: immich
 
 ################################
+# Settings
+################################
+
+immich_postgres_name: "{{ immich_name }}_postgres"
+immich_postgres_docker_env_db: "{{ immich_name }}"
+immich_postgres_docker_image_tag: "pg14-v0.2.0-rootless"
+immich_postgres_docker_image_repo: "tensorchord/pgvecto-rs"
+immich_postgres_paths_folder: "{{ immich_name }}"
+immich_postgres_paths_location: "{{ server_appdata_path }}/{{ postgres_paths_folder }}/postgres"
+immich_postgres_commands_default: ["postgres", "-c", "shared_preload_libraries=vectors.so", "-c", "search_path=$$user,public,vectors", "-c", "logging_collector=on", "-c", "max_wal_size=2GB", "-c", "shared_buffers=512MB", "-c", "wal_compression=on"]
+immich_postgres_docker_envs_custom:
+  POSTGRES_INITDB_ARGS: '--data-checksums'
+
+################################
 # Paths
 ################################
 
@@ -80,17 +94,17 @@ immich_docker_envs_default:
   DB_DATABASE_NAME: "{{ immich_name }}"
   REDIS_HOSTNAME: "{{ immich_name }}_redis"
   IMMICH_VERSION: "{{ immich_docker_image_tag }}"
-  LOG_LEVEL: "log"
+  IMMICH_LOG_LEVEL: "debug"
   UPLOAD_LOCATION: "/mnt/unionfs/Media/Photos"
   TZ: "{{ tz }}"
+  IMMICH_PORT: "3001"
+  IMMICH_HOST: "{{ immich_name }}"
 immich_docker_envs_custom: {}
 immich_docker_envs: "{{ immich_docker_envs_default
                         | combine(immich_docker_envs_custom) }}"
 
 # Commands
-immich_docker_commands_default: 
-  - "start.sh"
-  - "immich"
+immich_docker_commands_default: []
 immich_docker_commands_custom: []
 immich_docker_commands: "{{ immich_docker_commands_default
                             + immich_docker_commands_custom }}"
@@ -154,3 +168,8 @@ immich_docker_state: started
 
 # User Map
 immich_docker_user: "{{ uid }}:{{ gid }}"
+
+# Dependencies
+immich_depends_on: "{{ immich_postgres_name }},{{ immich_name }}_redis,{{ immich_name }}_machine_learning"
+immich_depends_on_delay: "0"
+immich_depends_on_healthchecks: "false"

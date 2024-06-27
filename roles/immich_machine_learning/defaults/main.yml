@@ -38,6 +38,7 @@ immich_machine_learning_docker_image: "ghcr.io/immich-app/immich-machine-learnin
 
 # Ports
 immich_machine_learning_docker_ports_defaults: []
+#   - "3003/tcp:null"
 immich_machine_learning_docker_ports_custom: []
 immich_machine_learning_docker_ports: "{{ immich_machine_learning_docker_ports_defaults
                                           + immich_machine_learning_docker_ports_custom }}"
@@ -55,7 +56,7 @@ immich_machine_learning_docker_commands: "{{ immich_machine_learning_docker_comm
                                              + immich_machine_learning_docker_commands_custom }}"
 
 # Volumes
-immich_machine_learning_docker_volumes_default: 
+immich_machine_learning_docker_volumes_default:
   - "/etc/localtime:/etc/localtime:ro"
 immich_machine_learning_docker_volumes_custom: []
 immich_machine_learning_docker_volumes: "{{ immich_machine_learning_docker_volumes_default
@@ -112,3 +113,8 @@ immich_machine_learning_docker_state: started
 
 # User Map
 immich_machine_learning_docker_user: "{{ uid }}:{{ gid }}"
+
+# Dependencies
+immich_depends_on: "{{ immich_postgres_name }},{{ immich_name }}_redis,{{ immich_name }}"
+immich_depends_on_delay: "0"
+immich_depends_on_healthchecks: "false"
