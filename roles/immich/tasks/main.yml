@@ -39,6 +39,11 @@
     postgres_docker_commands_default: "{{ immich_postgres_commands_default }}"
     postgres_docker_envs_custom: "{{ immich_postgres_docker_envs_custom }}"
 
+- name: Remove legacy Machine Learning Docker container
+  ansible.builtin.include_tasks: "{{ resources_tasks_path }}/docker/remove_docker_container.yml"
+  vars:
+    var_prefix: "{{ immich_name }}_machine_learning"
+
 - name: Import Immich Machine Learning Role
   ansible.builtin.include_role:
     name: immich_machine_learning
