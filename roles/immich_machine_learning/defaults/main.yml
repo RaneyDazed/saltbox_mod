@@ -17,104 +17,109 @@ immich_machine_learning_name: immich_machine_learning
 # Paths
 ################################
 
-immich_machine_learning_paths_folder: "{{ immich_machine_learning_name }}"
-immich_machine_learning_paths_location: "{{ server_appdata_path }}/{{ immich_machine_learning_paths_folder }}"
-immich_machine_learning_paths_folders_list:
-  - "{{ immich_machine_learning_paths_location }}"
-  - "{{ immich_machine_learning_paths_location }}/cache"
-  - "{{ immich_machine_learning_paths_location }}/.map"
+immich_machine_learning_role_paths_folder: "{{ immich_machine_learning_name }}"
+immich_machine_learning_role_paths_location: "{{ server_appdata_path }}/{{ immich_machine_learning_role_paths_folder }}"
+immich_machine_learning_role_paths_folders_list:
+  - "{{ immich_machine_learning_role_paths_location }}"
+  - "{{ immich_machine_learning_role_paths_location }}/cache"
+  - "{{ immich_machine_learning_role_paths_location }}/.map"
 
 ################################
 # Docker
 ################################
 
 # Container
-immich_machine_learning_docker_container: "{{ immich_machine_learning_name }}"
+immich_machine_learning_role_docker_container: "{{ immich_machine_learning_name }}"
 
 # Image
-immich_machine_learning_docker_image_pull: true
-immich_machine_learning_docker_image_tag: "release"
-immich_machine_learning_docker_image: "ghcr.io/immich-app/immich-machine-learning:{{ immich_machine_learning_docker_image_tag }}"
+immich_machine_learning_role_docker_image_pull: true
+immich_machine_learning_role_docker_image_tag: "release"
+immich_machine_learning_role_docker_image: "ghcr.io/immich-app/immich-machine-learning:{{ immich_machine_learning_role_docker_image_tag }}"
 
 # Ports
-immich_machine_learning_docker_ports_defaults: []
+immich_machine_learning_role_docker_ports_defaults: []
 #   - "3003/tcp:null"
-immich_machine_learning_docker_ports_custom: []
-immich_machine_learning_docker_ports: "{{ immich_machine_learning_docker_ports_defaults
-                                          + immich_machine_learning_docker_ports_custom }}"
+immich_machine_learning_role_docker_ports_custom: []
+immich_machine_learning_role_docker_ports: "{{ immich_machine_learning_role_docker_ports_defaults
+                                              + immich_machine_learning_role_docker_ports_custom }}"
 
 # Envs
-immich_machine_learning_docker_envs_default: {}
-immich_machine_learning_docker_envs_custom: {}
-immich_machine_learning_docker_envs: "{{ immich_machine_learning_docker_envs_default
-                                         | combine(immich_machine_learning_docker_envs_custom) }}"
+immich_machine_learning_role_docker_envs_default: {}
+immich_machine_learning_role_docker_envs_custom: {}
+immich_machine_learning_role_docker_envs: "{{ lookup('role_var', '_docker_envs_default', role='immich_machine_learning')
+                                            | combine(lookup('role_var', '_docker_envs_custom', role='immich_machine_learning')) }}"
 
 # Commands
-immich_machine_learning_docker_commands_default: []
-immich_machine_learning_docker_commands_custom: []
-immich_machine_learning_docker_commands: "{{ immich_machine_learning_docker_commands_default
-                                             + immich_machine_learning_docker_commands_custom }}"
+immich_machine_learning_role_docker_commands_default: []
+immich_machine_learning_role_docker_commands_custom: []
+immich_machine_learning_role_docker_commands: "{{ immich_machine_learning_role_docker_commands_default
+                                             + immich_machine_learning_role_docker_commands_custom }}"
 
 # Volumes
 immich_machine_learning_docker_volumes_default:
   - "/etc/localtime:/etc/localtime:ro"
-immich_machine_learning_docker_volumes_custom: []
-immich_machine_learning_docker_volumes: "{{ immich_machine_learning_docker_volumes_default
-                                            + immich_machine_learning_docker_volumes_custom }}"
+  - "/opt/immich/machine-learning/cache:/cache"
+immich_machine_learning_role_docker_volumes_custom: []
+immich_machine_learning_role_docker_volumes: "{{ lookup('role_var', '_docker_volumes_default', role='immich_machine_learning')
+                                + lookup('role_var', '_docker_volumes_custom', role='immich_machine_learning') }}"
 
 # Devices
-immich_machine_learning_docker_devices_default: []
-immich_machine_learning_docker_devices_custom: []
-immich_machine_learning_docker_devices: "{{ immich_machine_learning_docker_devices_default
-                                            + immich_machine_learning_docker_devices_custom }}"
+immich_machine_learning_role_docker_devices_default: []
+immich_machine_learning_role_docker_devices_custom: []
+immich_machine_learning_role_docker_devices: "{{ immich_machine_learning_role_docker_devices_default
+                                            + immich_machine_learning_role_docker_devices_custom }}"
 
 # Hosts
-immich_machine_learning_docker_hosts_default: []
-immich_machine_learning_docker_hosts_custom: []
-immich_machine_learning_docker_hosts: "{{ docker_hosts_common
-                                          | combine(immich_machine_learning_docker_hosts_default)
-                                          | combine(immich_machine_learning_docker_hosts_custom) }}"
+immich_machine_learning_role_docker_hosts_default: []
+immich_machine_learning_role_docker_hosts_custom: []
+immich_machine_learning_role_docker_hosts: "{{ docker_hosts_common
+                                          | combine(immich_machine_learning_role_docker_hosts_default)
+                                          | combine(immich_machine_learning_role_docker_hosts_custom) }}"
 
 # Labels
-immich_machine_learning_docker_labels_default: {}
-immich_machine_learning_docker_labels_custom: {}
-immich_machine_learning_docker_labels: "{{ docker_labels_common
-                                           | combine(immich_machine_learning_docker_labels_default)
-                                           | combine(immich_machine_learning_docker_labels_custom) }}"
+immich_machine_learning_role_docker_labels_default: {}
+immich_machine_learning_role_docker_labels_custom: {}
+immich_machine_learning_role_docker_labels: "{{ docker_labels_common
+                                           | combine(immich_machine_learning_role_docker_labels_default)
+                                           | combine(immich_machine_learning_role_docker_labels_custom) }}"
 
 # Hostname
-immich_machine_learning_docker_hostname: "{{ immich_machine_learning_name }}"
+immich_machine_learning_role_docker_hostname: "{{ immich_machine_learning_name }}"
 
 # Networks
-immich_machine_learning_docker_networks_alias: "{{ immich_machine_learning_name }}"
-immich_machine_learning_docker_networks_default: []
-immich_machine_learning_docker_networks_custom: []
-immich_machine_learning_docker_networks: "{{ docker_networks_common
-                                             + immich_machine_learning_docker_networks_default
-                                             + immich_machine_learning_docker_networks_custom }}"
+immich_machine_learning_role_docker_networks_alias: "{{ immich_machine_learning_name }}"
+immich_machine_learning_role_docker_networks_default: []
+immich_machine_learning_role_docker_networks_custom: []
+immich_machine_learning_role_docker_networks: "{{ docker_networks_common
+                                 + lookup('role_var', '_docker_networks_default', role='immich_machine_learning')
+                                 + lookup('role_var', '_docker_networks_custom', role='immich_machine_learning') }}"
 
 # Capabilities
-immich_machine_learning_docker_capabilities_default: []
-immich_machine_learning_docker_capabilities_custom: []
-immich_machine_learning_docker_capabilities: "{{ immich_machine_learning_docker_capabilities_default
-                                                 + immich_machine_learning_docker_capabilities_custom }}"
+immich_machine_learning_role_docker_capabilities_default: []
+immich_machine_learning_role_docker_capabilities_custom: []
+immich_machine_learning_role_docker_capabilities: "{{ immich_machine_learning_role_docker_capabilities_default
+                                                 + immich_machine_learning_role_docker_capabilities_custom }}"
 
 # Security Opts
-immich_machine_learning_docker_security_opts_default: []
-immich_machine_learning_docker_security_opts_custom: []
-immich_machine_learning_docker_security_opts: "{{ immich_machine_learning_docker_security_opts_default
-                                                  + immich_machine_learning_docker_security_opts_custom }}"
+immich_machine_learning_role_docker_security_opts_default: []
+immich_machine_learning_role_docker_security_opts_custom: []
+immich_machine_learning_role_docker_security_opts: "{{ immich_machine_learning_role_docker_security_opts_default
+                                                  + immich_machine_learning_role_docker_security_opts_custom }}"
 
 # Restart Policy
-immich_machine_learning_docker_restart_policy: unless-stopped
+immich_machine_learning_role_docker_restart_policy: unless-stopped
 
 # State
-immich_machine_learning_docker_state: started
+immich_machine_learning_role_docker_state: started
 
 # User Map
-immich_machine_learning_docker_user: "{{ uid }}:{{ gid }}"
+immich_machine_learning_role_docker_user: "{{ uid }}:{{ gid }}"
+
+immich_machine_learning_role_docker_groups:
+  # - "render" troublesome for some reason, causes the container to fail to start with an error about not being able to access /dev/dri
+  - "video"
 
 # Dependencies
-immich_depends_on: "{{ immich_postgres_name }},{{ immich_name }}_redis,{{ immich_name }}"
-immich_depends_on_delay: "0"
-immich_depends_on_healthchecks: "false"
+immich_machine_learning_role_depends_on: "{{ immich_name }}_postgres,{{ immich_name }}_redis,{{ immich_name }}"
+immich_machine_learning_role_depends_on_delay: "0"
+immich_machine_learning_role_depends_on_healthchecks: "false"

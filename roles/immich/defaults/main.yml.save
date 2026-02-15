@@ -18,7 +18,6 @@ immich_name: immich
 ################################
 
 immich_role_postgres_name: "{{ immich_name }}_postgres"
-immich_role_postgres_deploy: true
 immich_role_postgres_user: ""
 immich_role_postgres_password: ""
 immich_role_postgres_docker_shm_size: "128M"
@@ -31,6 +30,19 @@ immich_role_postgres_paths_location: "{{ server_appdata_path }}/{{ immich_role_p
 immich_role_postgres_docker_envs_custom:
   POSTGRES_INITDB_ARGS: '--data-checksums'
 
+# immich_postgres_name: "{{ immich_name }}_postgres"
+# immich_role_postgres_user: ""
+# immich_role_postgres_password: ""
+# immich_postgres_docker_shm_size: "128M"
+# immich_postgres_docker_env_db: "{{ immich_name }}"
+# immich_postgres_docker_image_tag: "16-vectorchord0.3.0-pgvectors0.3.0"
+# immich_postgres_docker_image_repo: "ghcr.io/immich-app/postgres"
+# immich_postgres_paths_folder: "{{ immich_name }}"
+# immich_postgres_paths_location: "{{ server_appdata_path }}/{{ immich_postgres_paths_folder }}/postgres"
+# immich_postgres_paths_location: "{{ server_appdata_path }}/{{ postgres_paths_folder }}/postgres"
+# immich_postgres_docker_envs_custom:
+  # POSTGRES_INITDB_ARGS: '--data-checksums'
+
 ################################
 # Paths
 ################################
@@ -41,6 +53,12 @@ immich_role_paths_folders_list:
   - "{{ immich_role_paths_location }}"
   - /mnt/local/Media/Photos
 
+# immich_paths_folder: "{{ immich_name }}"
+# immich_paths_location: "{{ server_appdata_path }}/{{ immich_paths_folder }}"
+# immich_paths_folders_list:
+  # - "{{ immich_paths_location }}"
+  # - /mnt/local/Media/Photos
+
 ################################
 # Web
 ################################
@@ -48,6 +66,10 @@ immich_role_paths_folders_list:
 immich_role_web_subdomain: "{{ immich_name }}"
 immich_role_web_domain: "{{ user.domain }}"
 immich_role_web_port: "3001"
+# immich_role_web_url: "{{ 'https://' + (immich_web_subdomain + '.' + immich_web_domain
+                 # if (immich_web_subdomain | length > 0)
+                 # else immich_web_domain) }}"
+
 immich_role_web_url: "{{ 'https://' + (lookup('role_var', '_web_subdomain', role='immich') + '.' + lookup('role_var', '_web_domain', role='immich')
                       if (lookup('role_var', '_web_subdomain', role='immich') | length > 0)
                       else lookup('role_var', '_web_domain', role='immich')) }}"
@@ -81,16 +103,16 @@ immich_role_docker_container: "{{ immich_name }}"
 
 # Image
 immich_role_docker_image_pull: true
+# was set to "release"
+immich_role_docker_image_tag: "latest"
 immich_role_docker_image_repo: "ghcr.io/immich-app/immich-server"
-# was set to release
-immich_role_docker_image_tag: "release"
 immich_role_docker_image: "{{ lookup('role_var', '_docker_image_repo', role='immich') }}:{{ lookup('role_var', '_docker_image_tag', role='immich') }}"
 
 # Ports
 immich_role_docker_ports_defaults: []
 immich_role_docker_ports_custom: []
-immich_role_docker_ports: "{{ immich_role_docker_ports_defaults
-                              + immich_role_docker_ports_custom }}"
+immich_role_docker_ports: "{{ immich_docker_ports_defaults
+                         + immich_docker_ports_custom }}"
 
 # Envs
 immich_role_docker_envs_default:
@@ -103,7 +125,7 @@ immich_role_docker_envs_default:
                 else lookup('role_var', '_docker_env_password', role='postgres') }}"
   DB_DATABASE_NAME: "{{ lookup('role_var', '_postgres_docker_env_db', role='immich') }}"
   REDIS_HOSTNAME: "{{ immich_name }}_redis"
-  IMMICH_VERSION: "{{ immich_role_docker_image_tag }}"
+  IMMICH_VERSION: "{{ immich_docker_image_tag }}"
   IMMICH_LOG_LEVEL: "debug"
   UPLOAD_LOCATION: "/mnt/unionfs/Media/Photos"
   TZ: "{{ tz }}"
@@ -122,19 +144,21 @@ immich_role_docker_envs_default:
   # IMMICH_HOST: "{{ immich_name }}"
 immich_role_docker_envs_custom: {}
 immich_role_docker_envs: "{{ lookup('role_var', '_docker_envs_default', role='immich')
-                          | combine(lookup('role_var', '_docker_envs_custom', role='immich')) }}"
+                             | combine(lookup('role_var', '_docker_envs_custom', role='immich')) }}"
 
 # Commands
 immich_role_docker_commands_default: []
 immich_role_docker_commands_custom: []
-immich_role_docker_commands: "{{ immich_role_docker_commands_default
-                                 + immich_role_docker_commands_custom }}"
+immich_role_docker_commands: "{{ immich_docker_commands_default
+                            + immich_docker_commands_custom }}"
 
 # Volumes
 immich_role_docker_volumes_default:
   - "/mnt/unionfs/Media/Photos:/usr/src/app/upload"
   - "/etc/localtime:/etc/localtime:ro"
 immich_role_docker_volumes_custom: []
+# immich_docker_volumes: "{{ immich_docker_volumes_default
+                           # + immich_docker_volumes_custom }}"
 immich_role_docker_volumes: "{{ lookup('role_var', '_docker_volumes_default', role='immich')
                                 + lookup('role_var', '_docker_volumes_custom', role='immich') }}"
 
@@ -142,60 +166,56 @@ immich_role_docker_volumes: "{{ lookup('role_var', '_docker_volumes_default', ro
 immich_role_docker_devices_default:
   - "/dev/dri:/dev/dri"
 immich_role_docker_devices_custom: []
-immich_role_docker_devices: "{{ lookup('role_var', '_docker_devices_default', role='immich')
-                                + lookup('role_var', '_docker_devices_custom', role='immich') }}"
+immich_role_docker_devices: "{{ immich_role_docker_devices_default
+                           + immich_role_docker_devices_custom }}"
 
 # Hosts
 immich_role_docker_hosts_default: []
 immich_role_docker_hosts_custom: []
-immich_role_docker_hosts: "{{ docker_hosts_common
-                           | combine(immich_role_docker_hosts_default)
-                           | combine(immich_role_docker_hosts_custom) }}"
+immich_docker_hosts: "{{ docker_hosts_common
+                         | combine(immich_docker_hosts_default)
+                         | combine(immich_docker_hosts_custom) }}"
 
 # Labels
-immich_role_docker_labels_default: {}
-immich_role_docker_labels_custom: {}
-immich_role_docker_labels: "{{ docker_labels_common
-                            | combine(immich_role_docker_labels_default)
-                            | combine(immich_role_docker_labels_custom) }}"
+immich_docker_labels_default: {}
+immich_docker_labels_custom: {}
+immich_docker_labels: "{{ docker_labels_common
+                          | combine(immich_docker_labels_default)
+                          | combine(immich_docker_labels_custom) }}"
 
 # Hostname
-immich_role_docker_hostname: "{{ immich_name }}"
+immich_docker_hostname: "{{ immich_name }}"
 
 # Networks
-immich_role_docker_networks_alias: "{{ immich_name }}"
-immich_role_docker_networks_default: []
-immich_role_docker_networks_custom: []
-immich_role_docker_networks: "{{ docker_networks_common
-                                 + lookup('role_var', '_docker_networks_default', role='immich')
-                                 + lookup('role_var', '_docker_networks_custom', role='immich') }}"
+immich_docker_networks_alias: "{{ immich_name }}"
+immich_docker_networks_default: []
+immich_docker_networks_custom: []
+immich_docker_networks: "{{ docker_networks_common
+                            + immich_docker_networks_default
+                            + immich_docker_networks_custom }}"
 
 # Capabilities
-immich_role_docker_capabilities_default: []
-immich_role_docker_capabilities_custom: []
-immich_role_docker_capabilities: "{{ immich_role_docker_capabilities_default
-                                     + immich_role_docker_capabilities_custom }}"
+immich_docker_capabilities_default: []
+immich_docker_capabilities_custom: []
+immich_docker_capabilities: "{{ immich_docker_capabilities_default
+                                + immich_docker_capabilities_custom }}"
 
 # Security Opts
-immich_role_docker_security_opts_default: []
-immich_role_docker_security_opts_custom: []
-immich_role_docker_security_opts: "{{ immich_role_docker_security_opts_default
-                                      + immich_role_docker_security_opts_custom }}"
+immich_docker_security_opts_default: []
+immich_docker_security_opts_custom: []
+immich_docker_security_opts: "{{ immich_docker_security_opts_default
+                                 + immich_docker_security_opts_custom }}"
 
 # Restart Policy
-immich_role_docker_restart_policy: unless-stopped
+immich_docker_restart_policy: unless-stopped
 
 # State
-immich_role_docker_state: started
+immich_docker_state: started
 
 # User Map
-immich_role_docker_user: "{{ uid }}:{{ gid }}"
-
-immich_role_docker_groups:
-  # - "render" troublesome for some reason, causes the container to fail to start with an error about not being able to access /dev/dri
-  - "video"
+immich_docker_user: "{{ uid }}:{{ gid }}"
 
 # Dependencies
-immich_role_depends_on: "{{ immich_name }}_postgres,{{ immich_name }}_redis,{{ immich_name }}_machine_learning"
-immich_role_depends_on_delay: "0"
-immich_role_depends_on_healthchecks: "false"
+immich_depends_on: "{{ immich_postgres_name }},{{ immich_name }}_redis,{{ immich_name }}_machine_learning"
+immich_depends_on_delay: "0"
+immich_depends_on_healthchecks: "false"
